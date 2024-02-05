@@ -23,13 +23,13 @@ public class EmployeeController {
 
     @PUT
     @Path("{id}")
-    public Employee updateEmployee(@PathParam("id") Long id) {
+    public Employee updateEmployee(@PathParam("id") Long id,@QueryParam("salary") int salary) {
         Employee employee=employeeRepository.findById(id);
         if(employee==null)
         {
             throw new NotFoundException("Employee not found");
         }
-        employee.setSalary(20000);
+        employee.setSalary(salary);
         employeeRepository.persist(employee);
         return employee;
     }
@@ -37,7 +37,6 @@ public class EmployeeController {
     @GET
     public  List<Employee> getAllEmployees() {
         return employeeRepository.listAll();
-         
     }
 
     @GET
