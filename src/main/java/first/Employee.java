@@ -1,5 +1,4 @@
 package first;
-import java.math.BigDecimal;
 import jakarta.persistence.*;
 
 @Entity(name = "Employee")
@@ -7,7 +6,6 @@ import jakarta.persistence.*;
 public class Employee {
 
     @Id
-    @GeneratedValue
     @Column(name = "employee_id")
     private int employeeId;
 
@@ -18,7 +16,7 @@ public class Employee {
     private String jobTitle;
 
     @Column(name = "salary")
-    private BigDecimal salary;
+    private int salary;
 
     @Column(name = "contact_number")
     private String contactNumber;
@@ -27,7 +25,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(int employeeId, String employeeName, String jobTitle, BigDecimal salary, String contactNumber) {
+    public Employee(int employeeId, String employeeName, String jobTitle, int salary, String contactNumber) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.jobTitle = jobTitle;
@@ -60,11 +58,11 @@ public class Employee {
         this.jobTitle = jobTitle;
     }
 
-    public BigDecimal getSalary() {
+    public int getSalary() {
         return salary;
     }
 
-    public void setSalary(BigDecimal salary) {
+    public void setSalary(int salary) {
         this.salary = salary;
     }
 
