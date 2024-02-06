@@ -1,9 +1,10 @@
 package first;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity(name = "Employee")
 @Table(name = "Employees") 
-public class Employee {
+public class Employee extends PanacheEntityBase {
 
     @Id
     @Column(name = "employee_id")

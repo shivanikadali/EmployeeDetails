@@ -1,5 +1,7 @@
 package first;
 import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -9,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional
+@ApplicationScoped
 public class EmployeeController {
 
     @Inject
@@ -36,8 +39,7 @@ public class EmployeeController {
 
     @GET
     public  List<Employee> getAllEmployees() {
-        return employeeRepository.listAll();
-         
+        return employeeRepository.listAll(); 
     }
 
     @GET
