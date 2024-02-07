@@ -39,8 +39,8 @@ public class Employee extends PanacheEntityBase {
         return employeeId;
     }
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployeeId(int l) {
+        this.employeeId = (int) l;
     }
 
     public String getEmployeeName() {

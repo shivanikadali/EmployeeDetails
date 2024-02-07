@@ -20,19 +20,18 @@ public class EmployeeController {
     @POST
     public Employee createEmployee(Employee employee) {
          employeeRepository.persist(employee);
-         employeeRepository.findById((long) employee.getEmployeeId());
          return employee;
     }
 
     @PUT
     @Path("{id}")
-    public Employee updateEmployee(@PathParam("id") Long id) {
+    public Employee updateEmployee(@PathParam("id") Long id,@QueryParam("salary")int salary) {
         Employee employee=employeeRepository.findById(id);
         if(employee==null)
         {
             throw new NotFoundException("Employee not found");
         }
-        employee.setSalary(20000);
+        employee.setSalary(salary);
         employeeRepository.persist(employee);
         return employee;
     }
@@ -60,7 +59,7 @@ public class EmployeeController {
     @Path("{id}")
     public void deleteEmployeeById(@PathParam("id") Long id) {
         Employee employee = employeeRepository.findById(id);
-        if (employee == null) {
+        if(employee == null) {
             throw new NotFoundException("Employee not found");
         }
         employeeRepository.delete(employee);
