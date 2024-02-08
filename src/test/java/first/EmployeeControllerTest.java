@@ -1,18 +1,19 @@
 package first;
 
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 
 @QuarkusTest
 class EmployeeControllerTest {
@@ -61,6 +62,14 @@ class EmployeeControllerTest {
         Mockito.verify(employeeRepository, Mockito.times(1)).findById((long) 1);
         assertEquals(employee, result);
         assertNotNull(result);
+
+        // when the employee not found
+        Mockito.when(employeeRepository.findById(anyLong())).thenReturn(null);
+        try {
+            employeeController.deleteEmployeeById(anyLong());
+        } catch (NotFoundException e) {
+
+        }
     }
 
     @Test
@@ -70,24 +79,35 @@ class EmployeeControllerTest {
         Employee updatedEmployee = employeeController.updateEmployee(1l, 3000);
         Mockito.verify(employeeRepository, Mockito.times(1)).findById((long) 1);
         assertEquals(3000, updatedEmployee.getSalary());
+
+        // when the employee not found
+        Mockito.when(employeeRepository.findById(anyLong())).thenReturn(null);
+        try {
+            employeeController.deleteEmployeeById(anyLong());
+        } catch (NotFoundException e) {
+
+        }
     }
 
     @Test
     void deleteEmployeeTest() {
-        List<Employee> employees = new ArrayList<>();
-        employees.add(employee);
-        employees.add(employee1);
-        Mockito.when(employeeRepository.findById((long) 1)).thenReturn(employees.get(1));
+        Mockito.when(employeeRepository.findById((long) 1)).thenReturn(employee);
         employeeController.deleteEmployeeById(1L);
         assertEquals(1, employee.getEmployeeId());
+        // when the employee not found
+        Mockito.when(employeeRepository.findById(anyLong())).thenReturn(null);
+        try {
+            employeeController.deleteEmployeeById(anyLong());
+        } catch (NotFoundException e) {
+
+        }
     }
 
     // @Test
     // void createEmployeeTest() {
-    //     List<Employee> employees = new ArrayList<>();
-    //     employees.add(employee);
-    //     Mockito.when(employeeRepository.persist(any())).thenReturn(employee);
-    //     employeeController.deleteEmployeeById(1L);
-    //     assertEquals(1, employee.getEmployeeId());
+    // List<Employee> employees = new ArrayList<>();
+    // employees.add(employee);
+    // Mockito.when(employeeRepository.persist(employee)).thenReturn(employee);
+    // employeeController.createEmployee(employee);
     // }
 }

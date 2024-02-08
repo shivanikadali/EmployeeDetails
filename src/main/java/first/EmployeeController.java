@@ -1,6 +1,6 @@
 package first;
-import java.util.List;
 
+import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -16,41 +16,38 @@ public class EmployeeController {
 
     @Inject
     EmployeeRepository employeeRepository;
-    
+
     @POST
     public Employee createEmployee(Employee employee) {
-         employeeRepository.persist(employee);
-         return employee;
-    }
-
-    @PUT
-    @Path("{id}")
-    public Employee updateEmployee(@PathParam("id") Long id,@QueryParam("salary")int salary) {
-        Employee employee=employeeRepository.findById(id);
-        if(employee==null)
-        {
-            throw new NotFoundException("Employee not found");
-        }
-        employee.setSalary(salary);
         employeeRepository.persist(employee);
         return employee;
     }
 
+    @PUT
+    @Path("{id}")
+    public Employee updateEmployee(@PathParam("id") Long id, @QueryParam("salary") int salary) {
+        Employee employee = employeeRepository.findById(id);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found");
+        } else {
+            employee.setSalary(salary);
+            employeeRepository.persist(employee);
+            return employee;
+        }
+    }
+
     @GET
-    public  List<Employee> getAllEmployees() {
-        return employeeRepository.listAll(); 
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.listAll();
     }
 
     @GET
     @Path("{id}")
     public Employee getEmployeeById(@PathParam("id") Long id) {
-        Employee employee=employeeRepository.findById(id);
-        if(employee==null)
-        {
+        Employee employee = employeeRepository.findById(id);
+        if (employee == null) {
             throw new NotFoundException("Employee not found");
-        }
-        else
-        {
+        } else {
             return employee;
         }
     }
@@ -59,9 +56,10 @@ public class EmployeeController {
     @Path("{id}")
     public void deleteEmployeeById(@PathParam("id") Long id) {
         Employee employee = employeeRepository.findById(id);
-        if(employee == null) {
+        if (employee == null) {
             throw new NotFoundException("Employee not found");
+        } else {
+            employeeRepository.delete(employee);
         }
-        employeeRepository.delete(employee);
     }
 }

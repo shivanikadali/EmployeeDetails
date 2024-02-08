@@ -1,9 +1,13 @@
 package first;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity(name = "Employee")
-@Table(name = "Employees") 
+@Table(name = "Employees")
 public class Employee extends PanacheEntityBase {
 
     @Id
