@@ -1,25 +1,56 @@
 package first;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
+import static org.hamcrest.Matchers.equalTo;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import jakarta.transaction.Transactional;
+
+@Transactional
 @QuarkusTest
 public class EmployeeControllerIT {
 
+    private static final int port = 8080;
+    private static final String HOST = "localhost";
+    private static WireMockServer server = new WireMockServer(port);
+
+    @BeforeAll
+    public static void setUp() {
+        server.start();
+        ResponseDefinitionBuilder mockResponse = new ResponseDefinitionBuilder();
+        mockResponse.withStatus(200);
+
+        WireMock.configureFor(HOST, server.port());
+        WireMock.stubFor(WireMock.get("/examplee")
+                .willReturn(mockResponse));
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        if (null != server && server.isRunning()) {
+            server.shutdownServer();
+        }
+    }
+
     @Test
     public void testCreateEmployeeEndpoint() {
-        given()
-                .contentType(ContentType.JSON)
-                .body("{\"employeeId\": 4, \"employeeName\": \"John Doe\", \"jobTitle\": \"Engineer\", \"contactNumber\": \"1234567890\", \"salary\": 5000}")
+        RestAssured.given()
+                .contentType("application/json")
+                .body("{\"employeeId\": 11, \"employeeName\": \"John Doe\", \"jobTitle\": \"Engineer\", \"contactNumber\": \"1234567890\", \"salary\": 5000}")
                 .when()
                 .post("/employee")
                 .then()
+                .assertThat()
                 .statusCode(200)
-                .body("employeeId", equalTo(4),
+                .body("employeeId", equalTo(11),
                         "employeeName", equalTo("John Doe"),
                         "jobTitle", equalTo("Engineer"),
                         "contactNumber", equalTo("1234567890"),
@@ -28,7 +59,7 @@ public class EmployeeControllerIT {
 
     @Test
     public void testGetAllEmployeesEndpoint() {
-        given()
+        RestAssured.given()
                 .when()
                 .get("/employee")
                 .then()
@@ -37,7 +68,7 @@ public class EmployeeControllerIT {
 
     @Test
     public void testGetEmployeeByIdEndpoint() {
-        given()
+        RestAssured.given()
                 .pathParam("id", 2)
                 .when()
                 .get("/employee/{id}")
@@ -48,7 +79,7 @@ public class EmployeeControllerIT {
 
     @Test
     public void testUpdateEmployeeEndpoint() {
-        given()
+        RestAssured.given()
                 .pathParam("id", 6)
                 .queryParam("salary", 60000)
                 .when()
@@ -60,8 +91,8 @@ public class EmployeeControllerIT {
 
     @Test
     public void testDeleteEmployeeEndpoint() {
-        given()
-                .pathParam("id", 4)
+        RestAssured.given()
+                .pathParam("id", 1)
                 .when()
                 .delete("/employee/{id}")
                 .then()

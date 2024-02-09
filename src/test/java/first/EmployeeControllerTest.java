@@ -46,6 +46,7 @@ class EmployeeControllerTest {
 
     @Test
     void getAllEmployeesTest() {
+        // creating list
         List<Employee> employees = new ArrayList<>();
         employees.add(employee);
         Mockito.when(employeeRepository.listAll()).thenReturn(employees);
