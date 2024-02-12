@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import io.quarkus.test.InjectMock;
@@ -58,7 +59,7 @@ class EmployeeControllerTest {
 
         assertEquals(employees, result);
         assertNotNull(result);
-     
+
         Mockito.verify(employeeRepository, Mockito.times(1)).listAll();
     }
 
@@ -112,5 +113,14 @@ class EmployeeControllerTest {
         } catch (NotFoundException e) {
             // NotFoundException expected, do nothing
         }
+    }
+
+    @Test
+    void createEmployeeTest() {
+        Mockito.doNothing().when(employeeRepository).persist(ArgumentMatchers.any(Employee.class));
+        Mockito.when(employeeRepository.isPersistent(ArgumentMatchers.any(Employee.class))).thenReturn(true);
+        Employee result=employeeController.createEmployee(employee);
+        assertNotNull(result);
+        assertEquals(employee, result);
     }
 }
