@@ -1,3 +1,5 @@
+its a quarkus project having basic endpoints and having unit,integration tests using wiremock and and mockito
+
 # project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
